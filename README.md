@@ -40,21 +40,6 @@ This repository is intended for educational, research, and academic purposes, es
 
 ---
 
-## Project Structure
-
-```
-Biomedical-Ecg-Signal-Processing/
-│
-├── data/               # Raw or sample ECG datasets
-├── src/                # Source code for signal processing
-├── notebooks/          # Jupyter notebooks (if available)
-├── results/            # Generated plots and outputs
-├── README.md
-└── requirements.txt
-```
-
----
-
 ## Installation
 
 Clone the repository:
