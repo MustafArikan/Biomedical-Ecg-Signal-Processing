@@ -1,136 +1,128 @@
 # Biomedical ECG Signal Processing
 
-Biomedical ECG Signal Processing is a project focused on analyzing and processing electrocardiogram (ECG) signals using signal processing and computational techniques. The main objective is to demonstrate fundamental biomedical signal processing concepts such as filtering, feature extraction, noise reduction, and visualization of cardiac signals.
-
-This repository is intended for educational, research, and academic purposes, especially for students studying biomedical engineering, electrical engineering, signal processing, or machine learning applications in healthcare.
+An end-to-end Biomedical Signal Processing pipeline in Python that models, filters, and analyzes Electrocardiogram (ECG) signals. The project simulates real-world noise artifacts (50Hz powerline interference, respiration-induced baseline wander, and random sensor noise), applies digital filtering techniques (IIR Notch and Butterworth Bandpass filters), detects QRS peaks (heartbeats), and evaluates performance using Signal-to-Noise Ratio (SNR) gain and classification confusion matrices.
 
 ---
 
-## Project Objectives
+## 🚀 Key Features
 
-- Understand the fundamentals of ECG signals and cardiac waveform structures
-- Apply digital signal processing techniques to biomedical data
-- Remove noise and artifacts from raw ECG signals
-- Extract meaningful features from ECG waveforms
-- Visualize and analyze processed ECG signals
-- Demonstrate real-world biomedical signal analysis workflows
-
----
-
-## Features
-
-- Raw ECG signal loading and preprocessing
-- Signal filtering and noise reduction
-- Baseline drift removal
-- Feature extraction from ECG signals
-- Time-domain signal analysis
-- Visualization of ECG waveforms
-- Modular and educational code structure
+* **Real-world Noise Simulation**: Models 50Hz powerline interference, slow respiratory baseline drift, and Gaussian sensor noise.
+* **Dual-Stage Digital Filtering**:
+  * **IIR Notch Filter**: Attenuates 50Hz powerline frequency.
+  * **Butterworth Bandpass Filter**: 4th-order filter (0.5Hz - 40.0Hz) to remove baseline wander and high-frequency noise.
+* **QRS Peak Detection**: Employs SciPy peak detection to locate heartbeats (R-peaks) on clean, noisy, and filtered signals.
+* **Beat-by-Beat Evaluation**: Matches detected peaks to reference peaks within a 50ms (~18 samples at 360Hz) physiological tolerance window to build confusion matrices.
+* **SNR Analysis**: Calculates Signal-to-Noise Ratio (SNR) improvement to mathematically measure noise attenuation.
+* **Rich Time-Frequency Visualization**: Outputs 9 figures including time-domain signals, FFT frequency spectrums, spectrograms, and confusion matrices.
 
 ---
 
-## Technologies Used
-
-- Python
-- NumPy
-- SciPy
-- Matplotlib
-- Signal Processing Techniques
-- Biomedical Data Analysis Methods
-
----
-
-## Installation
-
-Clone the repository:
+## 🛠️ Signal Processing Pipeline
 
 ```
-git clone https://github.com/MustafArikan/Biomedical-Ecg-Signal-Processing.git
-```
-
-Navigate into the project directory:
-
-```
-cd Biomedical-Ecg-Signal-Processing
-```
-
-Install dependencies:
-
-```
-pip install -r requirements.txt
+┌────────────────────────────────────────────────────────┐
+│ 1. Data Loader: Load SciPy electrocardiogram (360Hz)   │
+└───────────────────────────┬────────────────────────────┘
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│ 2. Noise Injector: Model 50Hz, baseline drift & noise   │
+└───────────────────────────┬────────────────────────────┘
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│ 3. Digital Filters: Apply 50Hz Notch + Bandpass Filter │
+└───────────────────────────┬────────────────────────────┘
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│ 4. Peak Detector: Find R-peaks (heartbeats)            │
+└───────────────────────────┬────────────────────────────┘
+                            ▼
+┌────────────────────────────────────────────────────────┐
+│ 5. Evaluator: Calculate SNR gain & Confusion Matrices  │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Usage
+## 📊 Sample Visualizations
 
-Run the main script:
+The pipeline automatically outputs analytical plots to the `Graphics/` directory:
+
+### Simulated Noise Components
+Detailed breakdown of the three injected noise artifacts (Powerline, Respiration baseline wander, and Sensor noise):
+![Noise Components](Graphics/Sekil_1_Gurultu_Bilesenleri.png)
+
+### Time-Domain Input Comparison
+Comparison of the original clean ECG signal versus the noisy corrupted signal:
+![Input Comparison](Graphics/Sekil_2_Giris_Karsilastirma.png)
+
+### Frequency Spectrum (FFT)
+Fast Fourier Transform (FFT) showing the prominent 50Hz powerline noise peak:
+![Frequency Spectrum](Graphics/Sekil_3_FFT_Analizi.png)
+
+### Time-Frequency Spectrogram
+![Spectrogram](Graphics/Sekil_4_Spektrogram.png)
+
+### Filtering Results (Notch + Bandpass)
+Final filtered output compared against the reference clean signal:
+![Filtered Output](Graphics/Sekil_6_Final_Sonuc.png)
+
+### QRS Complex Zoom-In
+Detailed zoom on a single heartbeat cycle (QRS complex) comparing original, noisy, and filtered waveforms:
+![Signal Zoom](Graphics/Sekil_7_Zoom_Detay.png)
+
+### SNR Gain Metric
+Signal-to-Noise Ratio (SNR) improvement before and after filtering:
+![SNR Gain](Graphics/Sekil_8_SNR_Metrik.png)
+
+### Heartbeat Detection Confusion Matrix
+Beat-by-beat classification validation of QRS detection on noisy vs. clean signals:
+![Confusion Matrix](Graphics/Sekil_9_Confusion_Matrix.png)
+
+---
+
+## 📁 Repository Structure
 
 ```
+Biomedical-Ecg-Signal-Processing/
+├── Graphics/
+│   ├── Sekil_1_Gurultu_Bilesenleri.png
+│   ├── Sekil_2_Giris_Karsilastirma.png
+│   ├── Sekil_3_FFT_Analizi.png
+│   ├── ...
+│   └── results.txt                         ← Log of computed SNR and confusion matrix values
+├── Biomedical_Ecg_Signal_Processing.ipynb   ← Jupyter Notebook workflow
+├── main.py                                  ← Executable Python script pipeline
+├── LICENSE                                  ← MIT License
+├── requirements.txt                         ← Project dependencies
+├── .gitignore                               ← Git ignore file
+└── README.md                                ← Project documentation (This file)
+```
+
+---
+
+## ⚙️ Quick Start
+
+### Prerequisites
+* Python 3.8 or higher.
+
+### Installation
+1. Navigate into the cloned directory:
+   ```bash
+   cd Biomedical-Ecg-Signal-Processing
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Running the Pipeline
+Run the main script to run the filter, compute metrics, and output the charts to `Graphics/`:
+```bash
 python main.py
 ```
 
-Or open the Jupyter notebooks if provided:
-
-```
-jupyter notebook
-```
-
-Follow the notebook instructions to execute signal processing steps.
-
 ---
 
-## Example Workflow
+## 📄 License
 
-1. Load raw ECG data
-2. Apply filtering techniques
-3. Remove baseline drift and noise
-4. Detect peaks or important features
-5. Visualize processed ECG signals
-6. Analyze waveform characteristics
-
----
-
-## Educational Purpose
-
-This project is designed primarily for learning and experimentation in:
-
-- Biomedical Signal Processing
-- Digital Signal Processing (DSP)
-- Healthcare Data Analysis
-- Engineering Education
-
-It can be used as a reference implementation for students and researchers.
-
----
-
-## Future Improvements
-
-- Real-time ECG signal processing
-- Machine learning based arrhythmia detection
-- Automated feature extraction pipelines
-- Advanced filtering techniques
-- Deep learning integration
-- GUI-based visualization tools
-
----
-
-## Contributing
-
-Contributions are welcome. You may:
-
-- Improve code structure
-- Add new signal processing algorithms
-- Optimize performance
-- Extend documentation
-
-Please open an issue or submit a pull request.
-
----
-
-
-## Author
-
-Mustafa Arıkan
-
-
+Distributed under the MIT License. See `LICENSE` for more information.
