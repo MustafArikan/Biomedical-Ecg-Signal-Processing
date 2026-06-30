@@ -100,6 +100,18 @@ Biomedical-Ecg-Signal-Processing/
 
 ---
 
+## 📦 Requirements & Dependencies
+
+The project requires Python 3.8+ and the following libraries:
+
+* **numpy** >= 1.22.0
+* **scipy** >= 1.8.0
+* **matplotlib** >= 3.5.0
+* **seaborn** >= 0.11.0
+* **scikit-learn** >= 1.0.0
+
+---
+
 ## ⚙️ Quick Start
 
 ### Prerequisites
