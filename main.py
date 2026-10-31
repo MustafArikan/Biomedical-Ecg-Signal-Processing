@@ -7,15 +7,7 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix
 import os
 
-try:
-    from scipy.datasets import electrocardiogram
-except ImportError:
-    try:
-        from scipy.misc import electrocardiogram
-    except ImportError:
-        def electrocardiogram():
-            t = np.linspace(0, 10, 3600)
-            return signal.gausspulse(t - 3, fc=5)
+from scipy.datasets import electrocardiogram
 
 plt.rcParams.update({
     'font.family': 'serif', 'font.size': 11, 'axes.labelsize': 12,
@@ -70,10 +62,11 @@ def peaks_to_binary_labels(ref_peaks, test_peaks, n_samples, tolerance=18):
     y_true[ref_peaks] = 1
     matched_test = set()
     for rp in ref_peaks:
-        window = np.where(np.abs(test_peaks - rp) <= tolerance)[0]
-        if len(window) > 0:
+        candidates = [tp for tp in test_peaks
+                      if tp not in matched_test and abs(tp - rp) <= tolerance]
+        if candidates:
             y_pred[rp] = 1
-            matched_test.add(test_peaks[window[0]])
+            matched_test.add(min(candidates, key=lambda tp: abs(tp - rp)))
     # unmatched detected peaks = false positives, mark at their own index
     for tp in test_peaks:
         if tp not in matched_test:
