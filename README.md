@@ -1,140 +1,98 @@
 # Biomedical ECG Signal Processing
 
-An end-to-end Biomedical Signal Processing pipeline in Python that models, filters, and analyzes Electrocardiogram (ECG) signals. The project simulates real-world noise artifacts (50Hz powerline interference, respiration-induced baseline wander, and random sensor noise), applies digital filtering techniques (IIR Notch and Butterworth Bandpass filters), detects QRS peaks (heartbeats), and evaluates performance using Signal-to-Noise Ratio (SNR) gain and classification confusion matrices.
+Study how simulated interference affects an ECG waveform and how digital filters change signal quality and peak detection.
 
----
+The executable pipeline loads a segment of SciPy's example ECG, adds reproducible noise, applies notch and band-pass filters, and writes plots and summary measurements. This is a signal-processing experiment, not a clinically validated detector.
 
-## 🚀 Key Features
+## Key Features
 
-* **Real-world Noise Simulation**: Models 50Hz powerline interference, slow respiratory baseline drift, and Gaussian sensor noise.
-* **Dual-Stage Digital Filtering**:
-  * **IIR Notch Filter**: Attenuates 50Hz powerline frequency.
-  * **Butterworth Bandpass Filter**: 4th-order filter (0.5Hz - 40.0Hz) to remove baseline wander and high-frequency noise.
-* **QRS Peak Detection**: Employs SciPy peak detection to locate heartbeats (R-peaks) on clean, noisy, and filtered signals.
-* **Beat-by-Beat Evaluation**: Matches detected peaks to reference peaks within a 50ms (~18 samples at 360Hz) physiological tolerance window to build confusion matrices.
-* **SNR Analysis**: Calculates Signal-to-Noise Ratio (SNR) improvement to mathematically measure noise attenuation.
-* **Rich Time-Frequency Visualization**: Outputs 9 figures including time-domain signals, FFT frequency spectrums, spectrograms, and confusion matrices.
+- Seeded 50 Hz powerline interference, 0.5 Hz baseline drift, and Gaussian sensor noise.
+- A 50 Hz IIR notch followed by a fourth-order 0.5–40 Hz Butterworth band-pass filter.
+- Peak detection and one-to-one tolerance matching of detected and reference peaks.
+- Signal-to-noise ratio, time/frequency plots, spectrograms, and confusion matrices.
+- Headless chart export for reproducible command-line execution.
 
----
+## Tech Stack
 
-## 🛠️ Signal Processing Pipeline
+Python, NumPy, SciPy, Pooch, Matplotlib, Seaborn, and scikit-learn. SciPy 1.10+ provides the dataset API; Pooch downloads the example data. See [requirements.txt](requirements.txt).
 
-```
-┌────────────────────────────────────────────────────────┐
-│ 1. Data Loader: Load SciPy electrocardiogram (360Hz)   │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ 2. Noise Injector: Model 50Hz, baseline drift & noise   │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ 3. Digital Filters: Apply 50Hz Notch + Bandpass Filter │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ 4. Peak Detector: Find R-peaks (heartbeats)            │
-└───────────────────────────┬────────────────────────────┘
-                            ▼
-┌────────────────────────────────────────────────────────┐
-│ 5. Evaluator: Calculate SNR gain & Confusion Matrices  │
-└────────────────────────────────────────────────────────┘
+## Architecture & Project Structure
+
+```text
+.
+├── main.py                                # Data, filters, peak matching, plots
+├── Biomedical_Ecg_Signal_Processing.ipynb   # Notebook experiment
+├── Graphics/                              # Committed examples and generated results
+├── tests/                                 # Filter and peak-matching regressions
+├── requirements.txt
+└── LICENSE
 ```
 
----
+`main.py` processes seconds 17–27 at 360 Hz, normalizes the segment, injects noise with seed 42, and evaluates noisy and filtered signals. Reference peaks come from the original example waveform using the same detector; they are not independent clinical annotations. Sample-level true negatives dominate the confusion matrix, so overall accuracy alone would be misleading.
 
-## 📊 Sample Visualizations
+## Getting Started
 
-The pipeline automatically outputs analytical plots to the `Graphics/` directory:
+Use Python 3.11. The first dataset load requires internet access; later runs can use SciPy's local cache.
 
-### Simulated Noise Components
-Detailed breakdown of the three injected noise artifacts (Powerline, Respiration baseline wander, and Sensor noise):
-![Noise Components](Graphics/Sekil_1_Gurultu_Bilesenleri.png)
-
-### Time-Domain Input Comparison
-Comparison of the original clean ECG signal versus the noisy corrupted signal:
-![Input Comparison](Graphics/Sekil_2_Giris_Karsilastirma.png)
-
-### Frequency Spectrum (FFT)
-Fast Fourier Transform (FFT) showing the prominent 50Hz powerline noise peak:
-![Frequency Spectrum](Graphics/Sekil_3_FFT_Analizi.png)
-
-### Time-Frequency Spectrogram
-![Spectrogram](Graphics/Sekil_4_Spektrogram.png)
-
-### Filtering Results (Notch + Bandpass)
-Final filtered output compared against the reference clean signal:
-![Filtered Output](Graphics/Sekil_6_Final_Sonuc.png)
-
-### QRS Complex Zoom-In
-Detailed zoom on a single heartbeat cycle (QRS complex) comparing original, noisy, and filtered waveforms:
-![Signal Zoom](Graphics/Sekil_7_Zoom_Detay.png)
-
-### SNR Gain Metric
-Signal-to-Noise Ratio (SNR) improvement before and after filtering:
-![SNR Gain](Graphics/Sekil_8_SNR_Metrik.png)
-
-### Heartbeat Detection Confusion Matrix
-Beat-by-beat classification validation of QRS detection on noisy vs. clean signals:
-![Confusion Matrix](Graphics/Sekil_9_Confusion_Matrix.png)
-
----
-
-## 📁 Repository Structure
-
-```
-Biomedical-Ecg-Signal-Processing/
-├── Graphics/
-│   ├── Sekil_1_Gurultu_Bilesenleri.png
-│   ├── Sekil_2_Giris_Karsilastirma.png
-│   ├── Sekil_3_FFT_Analizi.png
-│   ├── ...
-│   └── results.txt                         ← Log of computed SNR and confusion matrix values
-├── Biomedical_Ecg_Signal_Processing.ipynb   ← Jupyter Notebook workflow
-├── main.py                                  ← Executable Python script pipeline
-├── LICENSE                                  ← MIT License
-├── requirements.txt                         ← Project dependencies
-├── .gitignore                               ← Git ignore file
-└── README.md                                ← Project documentation (This file)
+```bash
+git clone https://github.com/MustafArikan/Biomedical-Ecg-Signal-Processing.git
+cd Biomedical-Ecg-Signal-Processing
+python -m venv .venv
 ```
 
----
+Activate with `source .venv/bin/activate` on Linux/macOS or `.venv\Scripts\Activate.ps1` in PowerShell.
 
-## 📦 Requirements & Dependencies
+```bash
+python -m pip install -r requirements.txt
+```
 
-The project requires Python 3.8+ and the following libraries:
+## Configuration
 
-* **numpy** >= 1.22.0
-* **scipy** >= 1.8.0
-* **matplotlib** >= 3.5.0
-* **seaborn** >= 0.11.0
-* **scikit-learn** >= 1.0.0
+No credentials or environment variables are required. Run from the repository root. `OUT` in `main.py` selects the output directory; filter frequencies, detector thresholds, and the 18-sample matching tolerance are defined in the source.
 
----
+## Usage
 
-## ⚙️ Quick Start
-
-### Prerequisites
-* Python 3.8 or higher.
-
-### Installation
-1. Navigate into the cloned directory:
-   ```bash
-   cd Biomedical-Ecg-Signal-Processing
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Running the Pipeline
-Run the main script to run the filter, compute metrics, and output the charts to `Graphics/`:
 ```bash
 python main.py
 ```
 
----
+The command writes nine figures and `Graphics/results.txt`, overwriting previous outputs. Matplotlib uses the noninteractive `Agg` backend.
 
-## 📄 License
+![Historical filtering example](Graphics/Sekil_6_Final_Sonuc.png)
 
-Distributed under the MIT License. See `LICENSE` for more information.
+The notebook can be opened separately after installing Jupyter; it is an experimental companion and is not automatically synchronized with the script.
+
+## Testing
+
+```bash
+python -m unittest discover -s tests
+```
+
+Tests verify one-to-one peak matching, 50 Hz rejection with pass-band preservation, and segment length/normalization. Dataset loading is replaced with a deterministic array in the unit test; the actual pipeline run separately exercises dataset retrieval and chart export.
+
+## Development & Quality
+
+```bash
+python -m compileall -q main.py tests
+python -m pip check
+```
+
+No CI workflow or packaged application build is configured. Review numerical changes together with regenerated outputs; do not treat committed charts as measurements of changed code.
+
+## Roadmap
+
+- Evaluate peak detection against independently annotated records.
+- Report beat-level precision and recall alongside sample-level matrices.
+- Consolidate the notebook and script around shared processing functions.
+
+## Contributing
+
+Include the sampling rate, signal source, noise seed, filter settings, and validation results when proposing numerical changes. Run the tests and pipeline before updating result artifacts.
+
+## License
+
+Code is distributed under the [MIT License](LICENSE). The SciPy example dataset has its own provenance; consult SciPy's dataset documentation for reuse.
+
+## Author
+
+[Mustafa Arıkan](https://github.com/MustafArikan)
